@@ -1,0 +1,117 @@
+#!/bin/bash
+
+function menu {
+	echo "----------------------------------------------"
+	echo "-------------User Administration--------------"
+	echo "----------------------------------------------"
+	echo "1. Create an user"
+	echo "2. Create basic repertories for user"
+	echo "3. Import Files"
+	echo "4. Remove an user"
+	echo "5. Add user to Group"
+	echo "6. Remove from a Group"
+	echo "7. Quit menu"
+	read -p "What is you choice ? " choice
+}
+
+function create_user {
+	read -p "Where is the file you want to use to create accounts ?" users_file
+	
+	while read line; do
+		useradd $line -g public --shell /bin/bash -p $6$PvQNBG20FBIiFTlL$5cSzawd8dzHVsXqTm/Yht.JensglAxcO01eUWrlziVORLXvLfXWoTzJ2DdYKKin9JCPOk9TOVSguB2h/ZA.RR1	
+	done < $users_file
+}
+
+function create_user_folders {
+	read -p "What is the username you want to create home folders ?" user_folders
+	id -u $user_folders
+	if [ $? -eq 0 ];then
+		mkdir /home/$user_folders
+		chown $user_folders /home/$user_folders
+		cd /home/$user_folders
+		mkdir Desktop Documents Downloads Music Pictures Videos
+		chown $user_folders Desktop Documents Downloads Music Pictures Videos
+		echo "$user_folders's folders successfully created"
+	else
+		echo "Sorry but $user_folders does not exist"
+	fi	
+}
+
+function import_files {
+	read -p "Which file(s) you want to import ? " file_select
+	read -p "Select the user you want to copy file(s) " user_select
+	cd /home/admin/files
+	mv $file_select /home/$user_select/Documents/
+	if [ $? -gt 0 ];then
+		echo "Failed to import files"
+	else
+		echo "Files successfully imported to $user_select folder"	
+	fi
+}
+
+function remove_user {
+	read -p "What is the username you want to remove ?" rm_user
+	userdel $rm_user
+	if [ $? -eq 0 ];then
+		echo "$rm_user's user has been removed successfully"
+	elif [ $? -eq 6 ];then
+		echo "$rm_user's user does not exist"
+	else
+		echo "Impossible to remove $rm_user user"
+	fi
+}
+
+function add_user_in_group {
+	read -p "What is the username you want to select ?" sel_user
+	read -p "What is the group you want to select ?" sel_group
+	usermod -a -G $sel_group $sel_user
+	if [ $? -gt 0 ];then
+		echo "Failed to add $sel_user to $selgroup group"
+	else
+		echo "$sel_user has been added to the $selgroup group"	
+	fi
+
+}
+
+function remove_user_from_group {
+	read -p "What is the username you want to select ?" se_user
+	read -p "What is the group you want to select ?" se_group
+	deluser $se_user $se_group
+	if [ $? -eq 0 ];then
+		echo "$se_user has been removed from $se_group group"
+	elif [ $? -eq 2 ];then
+		echo "$se_user does not exist"
+	elif [ $? -eq 6 ];then
+		echo "$se_user is not in $se_group group"
+	fi
+}
+
+choice=0
+while [ $choice -ne 7 ]
+do
+		menu
+		case $choice in
+			1)
+				create_user
+				;;
+			2)
+				create_user_folders
+				;;
+			3)
+				import_files	
+				;;
+			4)
+				remove_user
+				;;
+			5)
+				add_user_in_group
+				;;
+			6)
+				remove_user_from_group
+				;;
+			7)
+				exit
+				;;
+
+		esac
+done

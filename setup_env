@@ -1,0 +1,43 @@
+#!/bin/bash
+
+# Script to setup the environment
+
+# Add stagiaire account
+useradd stagiaire -g public --shell /bin/bash -p $6$PvQNBG20FBIiFTlL$5cSzawd8dzHVsXqTm/Yht.JensglAxcO01eUWrlziVORLXvLfXWoTzJ2DdYKKin9JCPOk9TOVSguB2h/ZA.RR1	
+
+# Create groups
+groupadd -f info
+groupadd -f administratif
+groupadd -f compta
+groupadd -f public
+
+# Create all folders
+cd /home
+mkdir administratif compta info public
+mkdir /home/administratif/stagiaire
+
+# Change proprietary of the groups
+chgrp -R administratif /home/administratif
+chgrp -R compta /home/compta
+chgrp -R info /home/info
+
+# change permissions
+chmod 751 /home/administratif
+chmod 750 /home/compta
+chmod 750 /home/info
+chmod 755 /home/public
+chmod +t /home
+
+# change groups permissions
+setfacl -dm g:administratif:rwx,g:info:rwx,o:--- /home/administratif
+setfacl -dm g:compta:rwx,g:info:rwx,o:--- /home/compta
+setfacl -dm g:info:rwx,o:--- /home/info
+
+# change stagiaire permissions
+setfacl -m u:stagiaire:rw /home/administratif/stagiaire
+
+# Change the owner of each file in the share folder
+chown :administratif /home/administratif && chmod g+s /home/administratif
+chown :compta /home/compta && chmod g+s /home/compta
+chown :info /home/info && chmod g+s /home/info
+

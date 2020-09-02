@@ -18,7 +18,7 @@ function create_user {
 	read -p "Where is the file you want to use to create accounts ?" users_file
 	
 	while read line; do
-		useradd $line -g public --shell /bin/bash -p $6$PvQNBG20FBIiFTlL$5cSzawd8dzHVsXqTm/Yht.JensglAxcO01eUWrlziVORLXvLfXWoTzJ2DdYKKin9JCPOk9TOVSguB2h/ZA.RR1	
+		useradd $line -g public --shell /bin/bash
 	done < $users_file
 }
 
